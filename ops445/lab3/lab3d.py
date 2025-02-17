@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-'''Lab 3 Inv 2 function operate'''
+
 # Author ID: [140360199]
 
 import subprocess
@@ -9,4 +9,5 @@ def free_space():
     return result.stdout.decode('utf-8').strip()
 
 if __name__ == '__main__':
-    print(free_space())
+    print(free_space())
+
