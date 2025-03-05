@@ -23,10 +23,11 @@ jobs:
       
       # Run dotnet build and publish
       - name: dotnet build and publish
+        working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}  # <-- Added working-directory
         run: |
           dotnet restore
           dotnet build --configuration Release
-          dotnet publish -c Release --property:PublishDir='${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
+          dotnet publish -c Release --property:PublishDir='./myapp'  # <-- Updated PublishDir parameter
           
       # Deploy to Azure Web apps
       - name: 'Run Azure webapp deploy action using publish profile credentials'
