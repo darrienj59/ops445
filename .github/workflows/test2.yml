@@ -1,0 +1,58 @@
+name: .NET Core
+
+on: 
+  push:
+    branches:
+      - master  # Trigger on the master branch (or adjust as per your branch)
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AZURE_WEBAPP_NAME: darrienjamesapp    # Set this to your Azure web app's name
+  AZURE_WEBAPP_PACKAGE_PATH: '.'        # Set this to the path to your web app project, defaults to the repository root
+  DOTNET_VERSION: '8.0.x'              # Set this to the .NET version to use
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repo
+      - uses: actions/checkout@main
+
+      # Login to Azure using Service Principal credentials
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}          # Service Principal Client ID
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}          # Azure Tenant ID
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Azure Subscription ID
+          auth-type: 'service-principal'  # Ensures Service Principal Authentication
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}  # Service Principal Client Secret
+
+      # Setup .NET Core SDK
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      # Run dotnet build and publish
+      - name: dotnet build and publish
+        run: |
+          dotnet restore
+          dotnet build --configuration Release
+          dotnet publish -c Release --property:PublishDir='./bin/Release/net8.0/publish'  # Correct publish directory
+
+      # Deploy to Azure Web App
+      - name: 'Run Azure webapp deploy action using publish profile credentials'
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}  # Use the Azure Web App's name
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}  # Use the publish profile secret
+          package: './bin/Release/net8.0/publish'  # Correct path to published files
+
+      # Logout from Azure
+      - name: logout
+        run: |
+          
