@@ -1,0 +1,28 @@
+name: .NET Core CI
+
+on: 
+  push:
+    branches:
+      - main # Trigger on pushes to the main branch
+
+env:
+  AZURE_WEBAPP_NAME: darrienjamesapp  # Replace with your actual web app name in Azure
+  AZURE_WEBAPP_PACKAGE_PATH: '.'      # If your web app files are in the root, keep this '.'
+  DOTNET_VERSION: '8.0.x'             # Set your .NET version if applicable, though it's not needed for non-.NET apps
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      # Deploy to Azure Web apps (No need to build .NET, just deploy your app)
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        with: 
+          app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your app name
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}  # Secret with publish profile for authentication
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}  # Path to your web app files (can be '.' for root)
