@@ -1,0 +1,37 @@
+
+PLAY [Lab 8 configeration] *****************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [labvm2]
+
+TASK [update Apache package] ***************************************************
+ok: [labvm2]
+
+TASK [restart Apache service] **************************************************
+changed: [labvm2]
+
+TASK [install tree package] ****************************************************
+ok: [labvm2]
+
+TASK [create user djames31] ****************************************************
+ok: [labvm2]
+
+TASK [configure hostname] ******************************************************
+ok: [labvm2]
+
+TASK [create ssh key] **********************************************************
+ok: [labvm2]
+
+TASK [create directories] ******************************************************
+ok: [labvm2] => (item=lab1)
+ok: [labvm2] => (item=lab2)
+ok: [labvm2] => (item=lab3)
+ok: [labvm2] => (item=lab4)
+ok: [labvm2] => (item=lab5)
+ok: [labvm2] => (item=lab6)
+ok: [labvm2] => (item=lab7)
+ok: [labvm2] => (item=lab8)
+
+PLAY RECAP *********************************************************************
+labvm2                     : ok=8    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

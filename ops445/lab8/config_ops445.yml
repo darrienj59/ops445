@@ -1,0 +1,60 @@
+---
+- name: Lab 8 configeration
+  hosts: webservers
+  become: true
+  vars:
+    seneca_id: djames31
+    labs:
+      - lab1
+      - lab2
+      - lab3
+      - lab4
+      - lab5
+      - lab6
+      - lab7
+      - lab8
+  tasks:
+  - name: update Apache package
+    apt:
+      name: apache2
+      update_cache: true
+      state: present
+
+  - name: restart Apache service
+    service:
+      name: apache2
+      state: restarted
+
+  - name: install tree package
+    apt:
+      name: tree
+      state: present
+  - name: "create user {{ seneca_id }}"
+    ansible.builtin.user:
+      name: "{{ seneca_id }}"
+      groups: sudo
+      state: present
+      password: $1$UHfLqYnD$7bYg9AEOYostxFy6q2g3J/
+      create_home: true
+      generate_ssh_key: true
+  
+  
+  
+  
+  - name: configure hostname
+    hostname:
+      name: "{{ seneca_id }}"
+  
+  
+
+  - name: create ssh key
+    ansible.posix.authorized_key:
+      user: "{{ seneca_id }}"
+      key: "{{ lookup('file', '~/.ssh/id_rsa.pub')}}"
+
+  - name: create directories 
+    file:
+      name: "/home/{{ seneca_id }}/ops445/{{ item}}"
+      state: directory
+      owner: "{{ seneca_id }}"
+    with_items: "{{ labs }}"
